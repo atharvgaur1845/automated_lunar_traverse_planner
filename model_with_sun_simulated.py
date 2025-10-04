@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """
-Formal Computer Vision Lunar Navigation System
 YOLO-based crater detection with tiered navigation and a safe-start protocol.
 """
 
@@ -89,7 +88,7 @@ class LunarNavigation:
         if sun_elev_rad<=0:return
         for c in self.craters:
             if c.radius>1.5:
-                s_len=(c.radius*0.5)/math.tan(sun_elev_rad);s_dx=-s_len*math.sin(sun_azim_rad);s_dy=-s_len*math.cos(sun_azim_rad)
+                s_len=(c.radius*0.3)/math.tan(sun_elev_rad);s_dx=-s_len*math.sin(sun_azim_rad);s_dy=-s_len*math.cos(sun_azim_rad)
                 v=[(c.center_x+s_dx+c.radius*0.9*math.cos(a),c.center_y+s_dy+c.radius*0.4*math.sin(a))for a in np.linspace(0,2*math.pi,12,endpoint=False)]
                 self.solar_regions.append({'polygon':v})
     def calculate_illumination(self,p):
@@ -281,6 +280,7 @@ class LunarNavigation:
             if is_haz:
                 ax.add_patch(Circle((c.center_x, c.center_y), c.radius + CONFIG['path_safety_margin'], fill=False, ec='#ff4d4d', ls='--', alpha=0.9, lw=2))
         ax.plot(self.start_point[0], self.start_point[1], 'p', c='lime', ms=20, mec='black', label='Start Point', zorder=10)
+        ax.add_patch(Circle(self.start_point, 5.0, fill=False, ec='magenta', ls='-', alpha=1.0, lw=3, zorder=9))
         main_waypoints_coords = [wp.coordinates for wp in self.visited_waypoints] + [self.start_point]
         other_points = [p for p in self.traverse_path if p not in main_waypoints_coords]
         if other_points:
@@ -295,6 +295,7 @@ class LunarNavigation:
         legend_elements = [
             mpatches.Patch(color='#ff4d4d', alpha=0.8, label='Hazardous Crater'), mpatches.Patch(color='none', ec='#ff4d4d', hatch='---', label='Safety Margin'),
             mpatches.Patch(color="#7db873", alpha=0.8, label='Navigable Crater'), plt.Line2D([0], [0], marker='p', color='w', mfc='lime', ms=20, label='Start Point'),
+            mpatches.Patch(color='none', ec='magenta', lw=3, label='Landing Zone'),
             mpatches.Patch(color='black', alpha=0.5, label='Crater Shadow'),
             plt.Line2D([0], [0], marker='o', color='w', mfc='#00ff00', ms=12, label='Waypoint (Crater Rim)'),
             plt.Line2D([0], [0], marker='o', color='w', mfc='#ff9900', ms=12, label='Waypoint (Regolith Sample)'),
