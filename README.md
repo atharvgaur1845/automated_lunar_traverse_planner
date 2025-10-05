@@ -148,3 +148,6 @@ The output is a detailed PNG map for each traverse, visualizing:
 * NumPy
 * Matplotlib
 
+
+## README made by Gemini, I hate writing it;)
+
